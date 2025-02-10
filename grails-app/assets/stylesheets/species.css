@@ -48,46 +48,70 @@ span.iucn {
 
 }
 
-span.iucn.green {
-    background-color:#005454;
-    border-color:#005454;
-    color:#fff;
+span.iucn.least-concern {
+    background-color: #60C659;
+    border-color: #60C659;
+    color: black;
 }
 
 span.iucn.near-threatened {
-    background-color:#005454;
-    border-color:#005454;
-    color:#84c684;
+    background-color: #CCE226;
+    border-color: #CCE226;
+    color: black;
 }
 
-span.iucn.yellow {
-    background-color: #c90;
-    border-color: #c90;
-    color:#ffc;
+span.iucn.vulnerable {
+    background-color: #F9E814;
+    border-color: #F9E814;
+    color: black;
 }
 
-span.iucn.orange {
-    background-color: #c63;
-    border-color: #c63;
-    color: #fc9;
-}
-
-span.iucn.red {
-    background-color: #c33;
-    border-color: #c33;
-    color:#fcc;
-}
-
-span.iucn.black {
-    background-color: black;
-    border-color: black;
+span.iucn.endangered {
+    background-color: #FC7F3F;
+    border-color: #FC7F3F;
     color: white;
+}
+
+span.iucn.critically-endangered {
+    background-color: #D81E05;
+    border-color: #D81E05;
+    color: white;
+}
+
+span.iucn.regionally-extinct {
+    background-color: #9B4F96;
+    border-color: #9B4F96;
+    color: white;
+}
+
+span.iucn.extinct-wild {
+    background-color: #542344;
+    border-color: #542344;
+    color: #c33;
 }
 
 span.iucn.extinct {
     background-color: black;
     border-color: black;
     color: #c33;
+}
+
+span.iucn.data-deficient {
+    background-color: #D1D1C6;
+    border-color: #D1D1C6;
+    color: black;
+}
+
+span.iucn.not-evaluated {
+    background-color: #FFFFFF ;
+    border-color: #FFFFFF ;
+    color: black;
+}
+
+span.iucn.not-applicable {
+    background-color: #C1B5A5;
+    border-color: #C1B5A5;
+    color: black;
 }
 
 /* anchor offset for floating header */
