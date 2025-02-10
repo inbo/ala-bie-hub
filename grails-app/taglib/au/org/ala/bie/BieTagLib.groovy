@@ -135,27 +135,41 @@ class BieTagLib implements GrailsConfigurationAware {
         def colour
 
         switch ( status ) {
-            case ~/(?i)extinct/:
-                colour = "extinct"
+            case ~/(?i)least\sconcern.*/:
+                colour = "least-concern"
                 break
-            case ~/(?i).*extinct.*/:
-                colour = "black"
-                break
-            case ~/(?i)critically\sendangered.*/:
-                colour = "red"
-                break
-            case ~/(?i)endangered.*/:
-                colour = "orange"
-                break
-            case ~/(?i)vulnerable.*/:
-                colour = "yellow"
-                break
-            case ~/(?i)near\sthreatened.*/:
+            case ~/(?i)near\sthreatened.*|bedreigd/:
                 colour = "near-threatened"
                 break
-                //case ~/(?i)least\sconcern.*/:
+            case ~/(?i)vulnerable.*|achteruitgaand|zeldzaam/:
+                colour = "vulnerable"
+                break
+            case ~/(?i)endangered.*|kwetsbaar/:
+                colour = "endangered"
+                break
+            case ~/(?i)critically\sendangered.*|met\sverdwijning\sbedreigd/:
+                colour = "critically-endangered"
+                break
+            case ~/(?i)regionally\sextinct.*|verdwenen\suit\svlaanderen\sen\shet\sbrussels\sgewest/:
+                colour = "regionally-extinct"
+                break
+            case ~/(?i)extinct\sin\sthe\swild.*|uitgestorven\sin\svlaanderen/:
+                colour = "extinct-wild"
+                break
+            case ~/(?i).*extinct.*|uitgestorven/:
+                colour = "extinct"
+                break
+            case ~/(?i)data\sdeficient.*|onvoldoende\sgekend|onvoldoende\sdata/:
+                colour = "data-deficient"
+                break
+            case ~/(?i)not\sevaluated.*|niet\sgeëvalueerd/:
+                colour = "not-evaluated"
+                break
+            case ~/(?i)not\sapplicable.*/:
+                colour = "not-applicable"
+                break
             default:
-                colour = "green"
+                colour = "least-concern"
                 break
         }
 
