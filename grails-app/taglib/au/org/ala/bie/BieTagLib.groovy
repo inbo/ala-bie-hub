@@ -135,37 +135,37 @@ class BieTagLib implements GrailsConfigurationAware {
         def colour
 
         switch ( status ) {
-            case ~/(?i)least\sconcern.*/:
+            case ~/(?i)least\sconcern.*|LC/:
                 colour = "least-concern"
                 break
-            case ~/(?i)near\sthreatened.*|bedreigd/:
+            case ~/(?i)near\sthreatened.*|NT|bedreigd/:
                 colour = "near-threatened"
                 break
-            case ~/(?i)vulnerable.*|achteruitgaand|zeldzaam/:
+            case ~/(?i)vulnerable.*|VU|achteruitgaand|zeldzaam/:
                 colour = "vulnerable"
                 break
-            case ~/(?i)endangered.*|kwetsbaar/:
+            case ~/(?i)endangered.*|EN|kwetsbaar/:
                 colour = "endangered"
                 break
-            case ~/(?i)critically\sendangered.*|met\sverdwijning\sbedreigd/:
+            case ~/(?i)critically\sendangered.*|CR|met\sverdwijning\sbedreigd/:
                 colour = "critically-endangered"
                 break
-            case ~/(?i)regionally\sextinct.*|verdwenen\suit\svlaanderen\sen\shet\sbrussels\sgewest/:
+            case ~/(?i)regionally\sextinct.*|RE|verdwenen\suit\svlaanderen\sen\shet\sbrussels\sgewest/:
                 colour = "regionally-extinct"
                 break
-            case ~/(?i)extinct\sin\sthe\swild.*|uitgestorven\sin\svlaanderen/:
+            case ~/(?i)extinct\sin\sthe\swild.*|EW|uitgestorven\sin\svlaanderen/:
                 colour = "extinct-wild"
                 break
-            case ~/(?i).*extinct.*|uitgestorven/:
+            case ~/(?i).*extinct.*|EX|uitgestorven/:
                 colour = "extinct"
                 break
-            case ~/(?i)data\sdeficient.*|onvoldoende\sgekend|onvoldoende\sdata/:
+            case ~/(?i)data\sdeficient.*|DD|onvoldoende\sgekend|onvoldoende\sdata/:
                 colour = "data-deficient"
                 break
-            case ~/(?i)not\sevaluated.*|niet\sgeëvalueerd/:
+            case ~/(?i)not\sevaluated.*|NE|niet\sgeëvalueerd/:
                 colour = "not-evaluated"
                 break
-            case ~/(?i)not\sapplicable.*/:
+            case ~/(?i)not\sapplicable.*|NA/:
                 colour = "not-applicable"
                 break
             default:
