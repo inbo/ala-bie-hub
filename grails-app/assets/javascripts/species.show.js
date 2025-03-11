@@ -350,7 +350,7 @@ function loadDataProviders() {
                     $.each(dataList, function(idx, d) {
                         var collectoryData = JSON.parse(d)
                         var dataResourceUrl = SHOW_CONF.collectoryUrl + "/public/show/" + collectoryData.uid;
-                        var tableRow = "<td><a href='" + dataResourceUrl + "'><span class='data-provider-name'>" + facetMap[collectoryData.uid].label + "</span></a>";
+                        var tableRow = "<td><a href='" + dataResourceUrl + "'><span class='data-provider-name'>" + collectoryData.name + "</span></a>";
 
                         if (collectoryData.provider) {
                             tableRow += "<br/><small><a href='" + SHOW_CONF.collectoryUrl + '/public/show/' + collectoryData.uid + "'>" + collectoryData.provider.name + "</a></small>";
