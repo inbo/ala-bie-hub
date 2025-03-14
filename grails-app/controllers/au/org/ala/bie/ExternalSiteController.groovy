@@ -49,7 +49,7 @@ class ExternalSiteController {
     def genbank = {
         genbankRateLimiter.acquire()
         def searchStrings = params.list("s")
-        def searchParams = URLEncoder.encode("\"" + searchStrings.join("\" OR \"") + "\"", "UTF-8")
+        def searchParams = "(" + searchStrings.join(") OR (") + ")"
         def genbankBase = grailsApplication.config.literature?.genbank?.url ?: "https://www.ncbi.nlm.nih.gov"
         def url = (genbankBase + "/nuccore/?term=" + searchParams)
         log.debug "genbank URL = ${url}"
