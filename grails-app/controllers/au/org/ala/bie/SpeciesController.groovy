@@ -86,7 +86,8 @@ class SpeciesController implements GrailsConfigurationAware {
         def filterQuery = params.list('fq') // will be a list even with only one value
         def startIndex = params.offset?:0
         def rows = params.rows?:10
-        def sortField = params.sortField?:""
+        def defaultSortField = grailsApplication.config.defaultSortField
+        def sortField = params.sortField?:(defaultSortField?:"")
         def sortDirection = params.dir?:"desc"
 
         if (params.dir && !params.sortField) {
