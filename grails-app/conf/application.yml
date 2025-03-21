@@ -321,3 +321,5 @@ environments:
             preferredSpeciesListDruid: dr4778
             preferredListName: ALA Preferred Species Images
             apiKey:
+sortFields: score,scientificName,commonNameSingle,rank
+defaultSortField: score

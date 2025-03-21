@@ -206,18 +206,11 @@
                         <div class="form-group">
                             <label for="sort-by"><g:message code="search.sort.by"/></label>
                             <select class="form-control input-sm" id="sort-by" name="sort-by">
-                                <option value="score" ${(params.sortField == 'score') ? "selected=\"selected\"" : ""}>
-                                    <g:message code="search.sort.match"/>
-                                </option>
-                                <option value="scientificName" ${(params.sortField == 'scientificName') ? "selected=\"selected\"" : ""}>
-                                    <g:message code="search.sort.scientific"/>
-                                </option>
-                                <option value="commonNameSingle" ${(params.sortField == 'commonNameSingle') ? "selected=\"selected\"" : ""}>
-                                    <g:message code="search.sort.common"/>
-                                </option>
-                                <option value="rank" ${(params.sortField == 'rank') ? "selected=\"selected\"" : ""}>
-                                    <g:message code="search.sort.taxon"/>
-                                </option>
+                                <g:each in="${grailsApplication.config.sortFields.split(',')}" var="sortField">
+                                    <option value="${sortField}" ${(params.sortField == sortField) ? "selected=\"selected\"" : ""}>
+                                        <g:message code="search.sort.${sortField}"/>
+                                    </option>
+                                </g:each>
                             </select>
                         </div>
                         <div class="form-group">
