@@ -40,10 +40,13 @@ class SpeciesController implements GrailsConfigurationAware {
     /** The set of categories to pull */
     Set<String> pullCategories
 
+    String speciesListTabsConfig
+
     @Override
     void setConfiguration(Config config) {
         pull = config.getProperty('vernacularName.pull.active', Boolean, false)
         pullCategories = config.getProperty('vernacularName.pull.categories', String, '').split(',').collect({ it.trim() }) as Set
+        speciesListTabsConfig = config.getProperty('pluginTabsConfig', String, "")
     }
 
     def geoSearch = {
@@ -198,6 +201,19 @@ class SpeciesController implements GrailsConfigurationAware {
                     childConcepts: bieService.getChildConceptsForGuid(taxonDetails.taxonConcept.guid),
                     speciesList: bieService.getSpeciesList(taxonDetails.taxonConcept?.guid?:guid)
             ])
+        }
+    }
+
+    /**
+     * Species page JS - fetch plugin tabs config as json; return empty json if the config value is not found
+     */
+    def pluginTabsConfig = {
+        if(!speciesListTabsConfig.empty){
+            URL pluginTabsConfigUrl = this.class.getResource(speciesListTabsConfig) ?: new URL(speciesListTabsConfig)
+            def pluginTabsConfig = new JsonSlurper().parse(pluginTabsConfigUrl)
+            render pluginTabsConfig as JSON
+        } else {
+            render Collections.emptyList() as JSON
         }
     }
 

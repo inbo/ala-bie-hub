@@ -25,6 +25,7 @@ function showSpeciesPage(traitsTabSet) {
     loadSpeciesLists();
     loadDataProviders();
     loadIndigenousData();
+    loadPluginTabs();
     //
     ////setup controls
     addAlerts();
@@ -460,6 +461,66 @@ function loadIndigenousData() {
             });
         }
     });
+}
+
+function loadPluginTabs() {
+    var pluginTabs = SHOW_CONF.pluginTabs
+    $.getJSON(SHOW_CONF.serverName + '/plugin-tabs-config', function (data) {
+        if (data && data.length > 0) {
+            var pluginTabsConfig = data.tabs
+            $.each(pluginTabs.split(','), function (idx, pluginTab) {
+                $.each(pluginTabsConfig, function (idx, tabConfig) {
+                    if (tabConfig.tab == pluginTab) {
+                        var tabSpeciesList = tabConfig.speciesList
+                        $.getJSON(SHOW_CONF.speciesListServiceUrl + '/ws/species/' + SHOW_CONF.guid + '?dr=' + tabSpeciesList, function (data) {
+                                if (data && data.length > 0) {
+                                    var speciesList = data[0]
+                                    renderPluginTab(speciesList, tabConfig)
+                                } // TODO exception handler
+                            })
+                    }
+                });
+            })
+        }
+
+    });
+}
+
+function renderPluginTab(speciesList, tabMetadata) {
+    var $tabHeader = $("<li class><a href='#" + tabMetadata.tab + "' data-toggle='tab'>" + tabMetadata.tab + "</a></li>")
+    $('.nav-tabs').last().append($tabHeader)
+    var $tabContent = $("<section class='tab-pane fade' id='abv-info'></section>");
+    $('.tab-content:last-child').append($tabContent)
+    loadPluginTab(speciesList, tabMetadata)
+}
+
+function loadPluginTab(speciesList, tabMetadata) {
+    var tabContentReferenceKey = tabMetadata.contentKey
+    var kvpValues = speciesList.kvpValues
+    $.each(kvpValues, function (idx, kvpValue) {
+        if (kvpValue.key == tabContentReferenceKey) {
+            var reference = kvpValue.value
+            loadPluginTabContent(reference)
+        }
+    })
+}
+
+function loadPluginTabContent(filename){
+    var url = SHOW_CONF.assetsUrl + "/abv-info/" + filename
+    $.ajax({url: url}).done(function (data) {
+        renderPluginTabContent(data)
+    });
+}
+
+function renderPluginTabContent(data) {
+    if (data) {
+        var node = $(data)
+        var $abvContent = node.find('[id="quarto-document-content"]').clone()
+        $abvContent.appendTo("#abv-info")
+    } else {
+        var $noAbvInfoMessage = '<span>No ABV info found for this species.</span>'
+        $noAbvInfoMessage.appendTo("#abv-info")
+    }
 }
 
 function showWikipediaData(data, testPage, targetName) {

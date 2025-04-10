@@ -399,6 +399,7 @@
 <asset:script type="text/javascript">
     // Global var to pass GSP vars into JS file @TODO replace bhl and trove with literatureSource list
     var SHOW_CONF = {
+        assetsUrl:          "${grailsApplication.config.headerAndFooter.baseURL}",
         biocacheUrl:        "${grailsApplication.config.biocache.baseURL}",
         biocacheServiceUrl: "${grailsApplication.config.biocacheService.baseURL}",
         qualityProfile:     "${grailsApplication.config.qualityProfile}",
@@ -466,7 +467,8 @@
         ausTraitsSourceUrl:"${grailsApplication.config.ausTraits.sourceURL}",
         showHiddenImages: false,
         imageFilter: "${raw(grailsApplication.config.imageFilter)}",
-        wikipediaWebportalUrl: "${grailsApplication.config.wikipedia.webportalUrl}"
+        wikipediaWebportalUrl: "${grailsApplication.config.wikipedia.webportalUrl}",
+        pluginTabs: "${grailsApplication.config.show.pluginTabs}"
     };
 
     $(function(){
