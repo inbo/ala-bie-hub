@@ -466,7 +466,7 @@ function loadIndigenousData() {
 function loadPluginTabs() {
     var pluginTabs = SHOW_CONF.pluginTabs
     $.getJSON(SHOW_CONF.serverName + '/plugin-tabs-config', function (data) {
-        if (data && data.length > 0) {
+        if (data) {
             var pluginTabsConfig = data.tabs
             $.each(pluginTabs.split(','), function (idx, pluginTab) {
                 $.each(pluginTabsConfig, function (idx, tabConfig) {
