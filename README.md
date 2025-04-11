@@ -50,3 +50,54 @@ To do this, use the following configuration settings:
 
 ### Change log
 See the [releases page](https://github.com/AtlasOfLivingAustralia/ala-bie-hub/releases) for this repository.
+
+### Plugin tabs
+
+(upstream PR?)
+You can add your own tabs to species show page and configure the tabs' content.
+#### How to configure plugin tab
+
+To contribute a plugin tab:
+- create species list for the tab
+  - csv with 2 columns: scientificName and contentFilePath (currently only static html files are supported).
+  - 2nd column name is configurable, see explanation below
+  - contentFilePath is the relative file path of the html file; the file content will be loaded into tab 
+  - upload the csv and create the species list
+  - example: 
+```csv
+"scientificName","contentFilePath"
+"Anser anser","abv/grauwe-gans.html"
+"Branta canadensis","abv/canadese-gans.html"    
+```
+- the assets have to be built with the branding and placed in <tab-id> folder under dist folder (or wherever the static content is served from) 
+- add the tab ID to show.pluginTabs config value (comma-separated list in case of > 1 tab)
+- add config file (example plugin tabs file can be found [here](src/test/resources/test-plugin-tabs.json))
+- set pluginTabsConfig config value to the config file url
+- add i18n for the tab label in messages(_*).properties under key label.plugintab.<tab ID>
+
+```yaml
+show:
+  tabs: overview,gallery,names,classification,records,literature,sequences,data-partners
+  pluginTabs: abv
+
+pluginTabsConfig: file:///config/bie-hub/plugin-tabs.json
+```
+```properties
+label.plugintab.abv=ABV rapport
+```
+
+An example plugin tabs file can be found [here](src/test/resources/test-plugin-tabs.json).
+```json
+{
+  "tabs": [
+    {
+      "tab": "abv",
+      "speciesList": "dr28",
+      "contentKey": "contentFilePath"
+    }
+  ]
+}
+```
+tab: tab ID  (must be the same as in plugin-tabs.json)
+speciesList:  druid of the species list
+contentKey: 2nd column in the species list csv (it will be stored as kvp in the species list)
