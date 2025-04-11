@@ -490,7 +490,8 @@ function renderPluginTab(speciesList, tabMetadata) {
     var tabLabel = jQuery.i18n.prop("label.plugintab." + tabMetadata.tab)
     var $tabHeader = $("<li class><a href='#" + tabMetadata.tab + "' data-toggle='tab'>" + tabLabel + "</a></li>")
     $('.nav-tabs').last().append($tabHeader)
-    var $tabContent = $("<section class='tab-pane fade' id='abv-info'></section>");
+    var sectionHtml = "<section class='tab-pane fade' id='" + tabMetadata.tab + "'></section>"
+    var $tabContent = $(sectionHtml);
     $('.tab-content:last-child').append($tabContent)
     loadPluginTab(speciesList, tabMetadata)
 }
