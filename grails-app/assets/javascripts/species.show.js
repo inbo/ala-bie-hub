@@ -487,7 +487,8 @@ function loadPluginTabs() {
 }
 
 function renderPluginTab(speciesList, tabMetadata) {
-    var $tabHeader = $("<li class><a href='#" + tabMetadata.tab + "' data-toggle='tab'>" + tabMetadata.tab + "</a></li>")
+    var tabLabel = jQuery.i18n.prop("label.plugintab." + tabMetadata.tab)
+    var $tabHeader = $("<li class><a href='#" + tabMetadata.tab + "' data-toggle='tab'>" + tabLabel + "</a></li>")
     $('.nav-tabs').last().append($tabHeader)
     var $tabContent = $("<section class='tab-pane fade' id='abv-info'></section>");
     $('.tab-content:last-child').append($tabContent)
@@ -495,18 +496,18 @@ function renderPluginTab(speciesList, tabMetadata) {
 }
 
 function loadPluginTab(speciesList, tabMetadata) {
-    var tabContentReferenceKey = tabMetadata.contentKey
+    var tabContentKey = tabMetadata.contentKey
     var kvpValues = speciesList.kvpValues
     $.each(kvpValues, function (idx, kvpValue) {
-        if (kvpValue.key == tabContentReferenceKey) {
-            var reference = kvpValue.value
-            loadPluginTabContent(reference)
+        if (kvpValue.key == tabContentKey) {
+            var contentFilePath = kvpValue.value
+            loadPluginTabContent(contentFilePath)
         }
     })
 }
 
-function loadPluginTabContent(filename){
-    var url = SHOW_CONF.assetsUrl + "/abv-info/" + filename
+function loadPluginTabContent(contentFilePath){
+    var url = SHOW_CONF.assetsUrl + "/" + contentFilePath
     $.ajax({url: url}).done(function (data) {
         renderPluginTabContent(data)
     });
