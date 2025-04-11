@@ -501,26 +501,26 @@ function loadPluginTab(speciesList, tabMetadata) {
     $.each(kvpValues, function (idx, kvpValue) {
         if (kvpValue.key == tabContentKey) {
             var contentFilePath = kvpValue.value
-            loadPluginTabContent(contentFilePath)
+            loadPluginTabContent(contentFilePath, tabMetadata)
         }
     })
 }
 
-function loadPluginTabContent(contentFilePath){
+function loadPluginTabContent(contentFilePath, tabMetadata){
     var url = SHOW_CONF.assetsUrl + "/" + contentFilePath
     $.ajax({url: url}).done(function (data) {
-        renderPluginTabContent(data)
+        renderPluginTabContent(data, tabMetadata)
     });
 }
 
-function renderPluginTabContent(data) {
+function renderPluginTabContent(data, tabMetadata) {
     if (data) {
         var node = $(data)
         var $abvContent = node.find('[id="quarto-document-content"]').clone()
-        $abvContent.appendTo("#abv-info")
+        $abvContent.appendTo("#" + tabMetadata.tab)
     } else {
         var $noAbvInfoMessage = '<span>No ABV info found for this species.</span>'
-        $noAbvInfoMessage.appendTo("#abv-info")
+        $noAbvInfoMessage.appendTo("#" + tabMetadata.tab)
     }
 }
 
