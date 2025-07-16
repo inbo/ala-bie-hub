@@ -206,9 +206,9 @@
                         <div class="form-group">
                             <label for="sort-by"><g:message code="search.sort.by"/></label>
                             <select class="form-control input-sm" id="sort-by" name="sort-by">
-                                <g:each in="${grailsApplication.config.sortFields.split(',')}" var="sortField">
-                                    <option value="${sortField}" ${(params.sortField == sortField) ? "selected=\"selected\"" : ""}>
-                                        <g:message code="search.sort.${sortField}"/>
+                                <g:each in="${grailsApplication.config.sortFields.split(',')}" var="currentSortField">
+                                    <option value="${currentSortField}" ${(sortField == currentSortField) ? "selected=\"selected\"" : ""}>
+                                        <g:message code="search.sort.${currentSortField}"/>
                                     </option>
                                 </g:each>
                             </select>
