@@ -45,7 +45,7 @@ function loadSpeciesLists() {
 
             if (specieslist.list.isBIE) {
                 let collapsiblePanelID = 'specieslist-collapsible-panel-' + i + '-' + specieslist.dataResourceUid;
-                var $description = $('#descriptionTemplate').clone();
+                var $description = $('#speciesListPanelTemplate').clone();
                 $description.css({'display': 'block'});
                 $description.attr('id', 'specieslist-block-' + i + '-' + specieslist.dataResourceUid);
                 $description.addClass('species-list-block');
