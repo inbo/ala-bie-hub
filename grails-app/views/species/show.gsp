@@ -197,7 +197,9 @@
 <!-- description template -->
 <div id="descriptionTemplate" class="panel panel-default panel-description" style="display:none;">
     <div class="panel-heading">
-        <h3 class="panel-title title"></h3>
+        <h3 class="panel-title title">
+            <a data-toggle="collapse" aria-expanded="false" role="button"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
+        </h3>
     </div>
 
     <div class="panel-body">
