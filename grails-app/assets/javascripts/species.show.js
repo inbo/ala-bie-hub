@@ -44,11 +44,15 @@ function loadSpeciesLists() {
             var maxListFields = 20;
 
             if (specieslist.list.isBIE) {
+                let collapsiblePanelID = 'specieslist-collapsible-panel-' + i + '-' + specieslist.dataResourceUid;
                 var $description = $('#descriptionTemplate').clone();
                 $description.css({'display': 'block'});
-                $description.attr('id', '#specieslist-block-' + specieslist.dataResourceUid);
+                $description.attr('id', 'specieslist-block-' + i + '-' + specieslist.dataResourceUid);
                 $description.addClass('species-list-block');
-                $description.find(".title").html(specieslist.list.listName);
+                $description.find(".title > a").attr('href', '#' + collapsiblePanelID);
+                $description.find(".title > a").attr('aria-controls', collapsiblePanelID);
+                $description.find(".title > a").append(specieslist.list.listName);
+                $description.find(".collapse").attr('id', collapsiblePanelID);
 
                 if (specieslist.kvpValues.length > 0) {
                     var content = "<table class='table specieslist-table'>";

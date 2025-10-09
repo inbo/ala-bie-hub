@@ -197,19 +197,25 @@
 <!-- description template -->
 <div id="descriptionTemplate" class="panel panel-default panel-description" style="display:none;">
     <div class="panel-heading">
-        <h3 class="panel-title title"></h3>
+        <h3 class="panel-title title">
+            <a data-toggle="collapse" aria-expanded="false" role="button"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
+        </h3>
     </div>
 
-    <div class="panel-body">
-        <p class="content"></p>
-    </div>
+    <div class="collapse">
 
-    <div class="panel-footer">
-        <p class="source"><g:message code="show.source" />: <span class="sourceText"></span></p>
+        <div class="panel-body">
+            <p class="content"></p>
+        </div>
 
-        <p class="rights"><g:message code="show.rights.holder" />: <span class="rightsText"></span></p>
+        <div class="panel-footer">
+            <p class="source"><g:message code="show.source" />: <span class="sourceText"></span></p>
 
-        <p class="provider"><g:message code="show.provided.by" />: <a href="#" class="providedBy"></a></p>
+            <p class="rights"><g:message code="show.rights.holder" />: <span class="rightsText"></span></p>
+
+            <p class="provider"><g:message code="show.provided.by" />: <a href="#" class="providedBy"></a></p>
+        </div>
+
     </div>
 </div>
 
