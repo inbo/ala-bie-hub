@@ -520,12 +520,13 @@ function loadPluginTabContent(contentFilePath, tabMetadata){
 
 function renderPluginTabContent(data, tabMetadata) {
     if (data) {
-        var node = $(data)
-        var $abvContent = node.find('[id="quarto-document-content"]').clone()
-        $abvContent.appendTo("#" + tabMetadata.tab)
+        // Parse the HTML safely
+        var $parsed = $('<div>').append($.parseHTML(data)); // Wrap in div so we can search
+        var $content = $parsed.find('#quarto-document-content').clone()
+        $content.appendTo("#" + tabMetadata.tab)
     } else {
-        var $noAbvInfoMessage = '<span>No ABV info found for this species.</span>'
-        $noAbvInfoMessage.appendTo("#" + tabMetadata.tab)
+        var $noContentFoundMessage = '<span>No content found for this species.</span>'
+        $noContentFoundMessage.appendTo("#" + tabMetadata.tab)
     }
 }
 
