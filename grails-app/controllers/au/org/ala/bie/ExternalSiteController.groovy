@@ -138,7 +138,7 @@ class ExternalSiteController {
         def url = scholarBase + "/scholar?q=" + searchParams
         def userAgent = Optional.ofNullable(request.getHeader("User Agent"))
                 .orElse("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6");
-        def doc = Jsoup.connect(url).userAgent(userAgent.get()).referrer("http://www.google.com").timeout(10 * 1000).get()
+        def doc = Jsoup.connect(url).userAgent(userAgent).referrer("http://www.google.com").timeout(10 * 1000).get()
         def totalResultsRaw = doc.select("div[id=gs_ab_md]").get(0).text()
         def matcher = totalResultsRaw =~ "About ([0-9\\,]{1,}) results \\([0-9\\.]{1,} sec\\)"
         def found = matcher.find()
