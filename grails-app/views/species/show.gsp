@@ -162,7 +162,7 @@
      class="taxon-summary-thumb hide"
      style="">
     <g:if test="${authService.userInRole('ROLE_ADMIN')}">
-        <button class="thumb-caption hero-button" style="bottom: 175px;z-index:1000">edit</button>
+        <button class="thumb-caption hero-button">edit</button>
     </g:if>
     <a data-toggle="lightbox"
        data-gallery="taxon-summary-gallery"

@@ -7,7 +7,7 @@
             <div class="taxon-summary-gallery">
                 <div class="main-img hide">
                     <g:if test="${authService.userInRole('ROLE_ADMIN')}">
-                        <button class="thumb-caption hero-button" style="bottom: 20px;">edit</button>
+                        <button class="thumb-caption hero-button">edit</button>
                     </g:if>
                     <a class="lightbox-img"
                        data-toggle="lightbox"
