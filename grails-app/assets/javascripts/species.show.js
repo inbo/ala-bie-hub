@@ -39,10 +39,10 @@ function loadSpeciesLists() {
   //console.log('### loadSpeciesLists #### ' + SHOW_CONF.speciesListServiceUrl + '/ws/species/' + SHOW_CONF.guid);
   $.getJSON(
     SHOW_CONF.speciesListServiceUrl +
-      "/ws/species/" +
-      SHOW_CONF.guid +
-      "?isBIE=true",
-    function (data) {
+    "/ws/species/" +
+    SHOW_CONF.guid +
+    "?isBIE=true",
+    function(data) {
       for (var i = 0; i < data.length; i++) {
         var specieslist = data[i];
         var maxListFields = 20;
@@ -71,7 +71,7 @@ function loadSpeciesLists() {
 
           if (specieslist.kvpValues.length > 0) {
             var content = "<table class='table specieslist-table'>";
-            $.each(specieslist.kvpValues, function (idx, kvpValue) {
+            $.each(specieslist.kvpValues, function(idx, kvpValue) {
               if (idx >= maxListFields) {
                 return false;
               }
@@ -99,8 +99,8 @@ function loadSpeciesLists() {
             .attr(
               "href",
               SHOW_CONF.speciesListUrl +
-                "/speciesListItem/list/" +
-                specieslist.dataResourceUid,
+              "/speciesListItem/list/" +
+              specieslist.dataResourceUid,
             );
           $description.find(".providedBy").html(specieslist.list.listName);
 
@@ -113,7 +113,7 @@ function loadSpeciesLists() {
 
 function addAlerts() {
   // alerts button
-  $("#alertsButton").click(function (e) {
+  $("#alertsButton").click(function(e) {
     e.preventDefault();
     var query = "Species: " + SHOW_CONF.scientificName;
     var searchString = "?q=lsid:" + SHOW_CONF.guid;
@@ -140,14 +140,14 @@ function loadMap() {
   //add an occurrence layer for this taxon
   var taxonLayer = L.tileLayer.wms(
     SHOW_CONF.biocacheServiceUrl +
-      "/mapping/wms/reflect?q=lsid:" +
-      SHOW_CONF.guid +
-      (SHOW_CONF.qualityProfile
-        ? "&qualityProfile=" + SHOW_CONF.qualityProfile
-        : "") +
-      "&qc=" +
-      SHOW_CONF.mapQueryContext +
-      SHOW_CONF.additionalMapFilter,
+    "/mapping/wms/reflect?q=lsid:" +
+    SHOW_CONF.guid +
+    (SHOW_CONF.qualityProfile
+      ? "&qualityProfile=" + SHOW_CONF.qualityProfile
+      : "") +
+    "&qc=" +
+    SHOW_CONF.mapQueryContext +
+    SHOW_CONF.additionalMapFilter,
     {
       layers: "ALA:occurrences",
       format: "image/png",
@@ -208,13 +208,13 @@ function loadMap() {
 function updateOccurrenceCount() {
   $.getJSON(
     SHOW_CONF.biocacheServiceUrl +
-      "/occurrences/search?q=lsid:" +
-      SHOW_CONF.guid +
-      "&qualityProfile=" +
-      SHOW_CONF.qualityProfile +
-      "&fq=" +
-      SHOW_CONF.mapQueryContext,
-    function (data) {
+    "/occurrences/search?q=lsid:" +
+    SHOW_CONF.guid +
+    "&qualityProfile=" +
+    SHOW_CONF.qualityProfile +
+    "&fq=" +
+    SHOW_CONF.mapQueryContext,
+    function(data) {
       if (data) {
         if (data.totalRecords > 0) {
           $(".occurrenceRecordCount").html(data.totalRecords.toLocaleString());
@@ -232,7 +232,7 @@ function updateOccurrenceCount() {
 function fitMapToBounds() {
   var jsonUrl =
     SHOW_CONF.biocacheServiceUrl + "/mapping/bounds?q=lsid:" + SHOW_CONF.guid;
-  $.getJSON(jsonUrl, function (data) {
+  $.getJSON(jsonUrl, function(data) {
     if (data.length == 4 && data[0] != 0 && data[1] != 0) {
       //console.log("data", data);
       var sw = L.latLng(data[1], data[0]);
@@ -281,20 +281,20 @@ function fitMapToBounds() {
 
 function loadAusTraits() {
   $.ajax({ url: SHOW_CONF.ausTraitsSummaryUrl })
-    .done(function (data) {
+    .done(function(data) {
       // handle if traits  controller returns an error
       if (data.error) {
         $("#traitsRecords").html(
           "<p style='font-size: small'>" +
-            jQuery.i18n.prop("no.traits.connection") +
-            " You can find more infomation on AusTraits   <a target='_blank' href='" +
-            SHOW_CONF.ausTraitsHomeUrl +
-            "'>here</a>. </p>",
+          jQuery.i18n.prop("no.traits.connection") +
+          " You can find more infomation on AusTraits   <a target='_blank' href='" +
+          SHOW_CONF.ausTraitsHomeUrl +
+          "'>here</a>. </p>",
         );
         $("#download-button-area").hide();
         $("#traitsRecords .panel-footer").hide();
       } else if (data.numeric_traits && data.categorical_traits) {
-        $.each(data.categorical_traits, function (idx, traitValue) {
+        $.each(data.categorical_traits, function(idx, traitValue) {
           var tableRow = "<tr><td>";
           tableRow += traitValue.trait_name + "</td><td>";
           tableRow +=
@@ -310,7 +310,7 @@ function loadAusTraits() {
           $("#categorical-traits tbody").append(tableRow);
         });
 
-        $.each(data.numeric_traits, function (idx, traitValue) {
+        $.each(data.numeric_traits, function(idx, traitValue) {
           console.log(traitValue.min, traitValue.mean, traitValue.max);
           var tableRow = "<tr><td>";
           tableRow += traitValue.trait_name + "</td><td class='centered-cell'>";
@@ -340,13 +340,13 @@ function loadAusTraits() {
       // apply table cell styling after content is loaded.
       $(".centered-cell").css({ "text-align": "center" });
     })
-    .error(function (jqXHR, textStatus, errorThrown) {
+    .error(function(jqXHR, textStatus, errorThrown) {
       console.warn("error " + textStatus);
       console.warn("incoming Text " + jqXHR.responseText);
     });
 
   $.ajax({ url: SHOW_CONF.ausTraitsCountUrl })
-    .done(function (data) {
+    .done(function(data) {
       if (
         data[0] &&
         data[0]["summary"] &&
@@ -372,7 +372,7 @@ function loadAusTraits() {
         $("#traits-description").html(htmlContent);
       }
     })
-    .error(function (jqXHR, textStatus, errorThrown) {
+    .error(function(jqXHR, textStatus, errorThrown) {
       console.warn("error " + textStatus);
       console.warn("incoming Text " + jqXHR.responseText);
     });
@@ -410,7 +410,7 @@ function loadDataProviders() {
   var uiUrl =
     SHOW_CONF.biocacheUrl + "/occurrences/search?q=lsid:" + SHOW_CONF.guid;
 
-  $.getJSON(url, function (data) {
+  $.getJSON(url, function(data) {
     if (data.totalRecords > 0) {
       var datasetCount = data.facetResults[0].fieldResult.length;
 
@@ -429,7 +429,7 @@ function loadDataProviders() {
 
       var uidList = [];
       var facetMap = {};
-      $.each(data.facetResults[0].fieldResult, function (idx, facetValue) {
+      $.each(data.facetResults[0].fieldResult, function(idx, facetValue) {
         if (facetValue.count > 0) {
           var uid = facetValue.fq
             .replace(/data_resource_uid:/, "")
@@ -449,8 +449,8 @@ function loadDataProviders() {
         data: JSON.stringify(uidList),
         contentType: "application/json",
         dataType: "json",
-        success: function (dataList) {
-          $.each(dataList, function (idx, d) {
+        success: function(dataList) {
+          $.each(dataList, function(idx, d) {
             var collectoryData = JSON.parse(d);
             var dataResourceUrl =
               SHOW_CONF.collectoryUrl + "/public/show/" + collectoryData.uid;
@@ -484,9 +484,9 @@ function loadDataProviders() {
             $("#dataset_" + collectoryData.uid).html(tableRow);
           });
         },
-      }).fail(function () {
+      }).fail(function() {
         // fallback to the method used pre collectory 5.1.0
-        $.each(data.facetResults[0].fieldResult, function (idx, facetValue) {
+        $.each(data.facetResults[0].fieldResult, function(idx, facetValue) {
           if (facetValue.count > 0) {
             var uid = facetValue.fq
               .replace(/data_resource_uid:/, "")
@@ -505,7 +505,7 @@ function loadDataProviders() {
             $.ajax({
               url: SHOW_CONF.collectoryServiceUrl + "/ws/dataResource/" + uid,
               dataType: "json",
-              success: function (collectoryData) {
+              success: function(collectoryData) {
                 if (collectoryData.provider) {
                   tableRow +=
                     "<br/><small><a href='" +
@@ -545,11 +545,11 @@ function loadIndigenousData() {
     SHOW_CONF.profileServiceUrl +
     "/api/v1/profiles?summary=true&tags=IEK&guids=" +
     SHOW_CONF.guid;
-  $.getJSON(url, function (data) {
+  $.getJSON(url, function(data) {
     if (data.total > 0) {
       $("#indigenous-info-tab").parent().removeClass("hide");
 
-      $.each(data.profiles, function (index, profile) {
+      $.each(data.profiles, function(index, profile) {
         var panel = $("#indigenous-profile-summary-template").clone();
         panel.removeClass("hide");
         panel.attr("id", profile.id);
@@ -559,10 +559,10 @@ function loadIndigenousData() {
           .find(".collection-logo")
           .append(
             "<img src='" +
-              logo +
-              "' alt='" +
-              profile.collection.title +
-              " logo'>",
+            logo +
+            "' alt='" +
+            profile.collection.title +
+            " logo'>",
           );
         panel.find(".collection-logo-caption").append(profile.collection.title);
 
@@ -572,7 +572,7 @@ function loadIndigenousData() {
           .append("(" + profile.collection.title + ")");
         var otherNames = "";
         var summary = "";
-        $.each(profile.attributes, function (index, attribute) {
+        $.each(profile.attributes, function(index, attribute) {
           if (attribute.name) {
             otherNames += attribute.text;
             if (index < profile.attributes.length - 2) {
@@ -589,8 +589,8 @@ function loadIndigenousData() {
           .find(".profile-link")
           .append(
             "<a href='" +
-              profile.url +
-              "' title='Click to view the whole profile' target='_blank'>View the full profile</a>",
+            profile.url +
+            "' title='Click to view the whole profile' target='_blank'>View the full profile</a>",
           );
 
         if (profile.thumbnailUrl) {
@@ -600,10 +600,10 @@ function loadIndigenousData() {
             .find(".image-embedded")
             .append(
               "<img src='" +
-                profile.thumbnailUrl +
-                "' alt='" +
-                profile.collection.title +
-                " main image'>",
+              profile.thumbnailUrl +
+              "' alt='" +
+              profile.collection.title +
+              " main image'>",
             );
         }
 
@@ -635,20 +635,20 @@ function loadIndigenousData() {
 
 function loadPluginTabs() {
   var pluginTabs = SHOW_CONF.pluginTabs;
-  $.getJSON(SHOW_CONF.serverName + "/plugin-tabs-config", function (data) {
+  $.getJSON(SHOW_CONF.serverName + "/plugin-tabs-config", function(data) {
     if (data) {
       var pluginTabsConfig = data.tabs;
-      $.each(pluginTabs.split(","), function (idx, pluginTab) {
-        $.each(pluginTabsConfig, function (idx, tabConfig) {
+      $.each(pluginTabs.split(","), function(idx, pluginTab) {
+        $.each(pluginTabsConfig, function(idx, tabConfig) {
           if (tabConfig.tab == pluginTab) {
             var tabSpeciesList = tabConfig.speciesList;
             $.getJSON(
               SHOW_CONF.speciesListServiceUrl +
-                "/ws/species/" +
-                SHOW_CONF.guid +
-                "?dr=" +
-                tabSpeciesList,
-              function (data) {
+              "/ws/species/" +
+              SHOW_CONF.guid +
+              "?dr=" +
+              tabSpeciesList,
+              function(data) {
                 if (data && data.length > 0) {
                   var speciesList = data[0];
                   renderPluginTab(speciesList, tabConfig);
@@ -666,10 +666,10 @@ function renderPluginTab(speciesList, tabMetadata) {
   var tabLabel = jQuery.i18n.prop("label.plugintab." + tabMetadata.tab);
   var $tabHeader = $(
     "<li class><a href='#" +
-      tabMetadata.tab +
-      "' data-toggle='tab'>" +
-      tabLabel +
-      "</a></li>",
+    tabMetadata.tab +
+    "' data-toggle='tab'>" +
+    tabLabel +
+    "</a></li>",
   );
   $(".nav-tabs").last().append($tabHeader);
   var sectionHtml =
@@ -682,7 +682,7 @@ function renderPluginTab(speciesList, tabMetadata) {
 function loadPluginTab(speciesList, tabMetadata) {
   var tabContentKey = tabMetadata.contentKey;
   var kvpValues = speciesList.kvpValues;
-  $.each(kvpValues, function (idx, kvpValue) {
+  $.each(kvpValues, function(idx, kvpValue) {
     if (kvpValue.key == tabContentKey) {
       var contentFilePath = kvpValue.value;
       loadPluginTabContent(contentFilePath, tabMetadata);
@@ -692,7 +692,7 @@ function loadPluginTab(speciesList, tabMetadata) {
 
 function loadPluginTabContent(contentFilePath, tabMetadata) {
   var url = SHOW_CONF.assetsUrl + "/" + contentFilePath;
-  $.ajax({ url: url }).done(function (data) {
+  $.ajax({ url: url }).done(function(data) {
     renderPluginTabContent(data, tabMetadata);
   });
 }
@@ -718,7 +718,7 @@ function showWikipediaData(data, testPage, targetName) {
   var dataLength = $(data).length;
   var tested = !testPage;
   var valid = true;
-  node.each(function (idx, item) {
+  node.each(function(idx, item) {
     // include SECTIONS
     if (item.tagName == "SECTION") {
       var $description = $("#descriptionTemplate").clone();
@@ -728,7 +728,7 @@ function showWikipediaData(data, testPage, targetName) {
       if (redirect.length > 0) {
         var redirectItem = redirect[0].href.replace(/^.*\//, "");
         var url = "/externalSite/wikipedia?name=" + encodeURI(redirectItem);
-        $.ajax({ url: url }).done(function (data) {
+        $.ajax({ url: url }).done(function(data) {
           showWikipediaData(data, testPage, redirectItem);
         });
         return;
@@ -831,29 +831,29 @@ function loadExternalSources() {
       name = SHOW_CONF.wikiUrl.replace(/^.*\//, "");
 
       var url = "/externalSite/wikipedia?name=" + encodeURI(name);
-      $.ajax({ url: url }).done(function (data) {
+      $.ajax({ url: url }).done(function(data) {
         showWikipediaData(data, false, name);
       });
     } else {
       var url = "/externalSite/wikipedia?name=" + encodeURI(name);
-      $.ajax({ url: url }).done(function (data) {
+      $.ajax({ url: url }).done(function(data) {
         showWikipediaData(data, true, name);
       });
     }
   }
 
   //load Genbank content
-  $.ajax({ url: SHOW_CONF.genbankUrl }).done(function (data) {
+  $.ajax({ url: SHOW_CONF.genbankUrl }).done(function(data) {
     if (data.total) {
       $(".genbankResultCount").html(
         '<a href="' +
-          data.resultsUrl +
-          '">View all results - ' +
-          data.total +
-          "</a>",
+        data.resultsUrl +
+        '">View all results - ' +
+        data.total +
+        "</a>",
       );
       if (data.results) {
-        $.each(data.results, function (idx, result) {
+        $.each(data.results, function(idx, result) {
           var $genbank = $("#genbankTemplate").clone();
           $genbank.removeClass("hide");
           $genbank.find(".externalLink").attr("href", result.link);
@@ -868,14 +868,14 @@ function loadExternalSources() {
 
   //load sound content
   $.ajax({ url: SHOW_CONF.soundUrl })
-    .done(function (data) {
+    .done(function(data) {
       if (data.sounds) {
         var soundsDiv =
           "<div class='panel panel-default '><div class='panel-heading'>";
         soundsDiv +=
           '<h3 class="panel-title">Sounds</h3></div><div class="panel-body">';
         soundsDiv +=
-          '<audio control src="' +
+          '<audio controls src="' +
           data.sounds[0].alternativeFormats["audio/mpeg"] +
           '" preload="auto" />';
         var source = "";
@@ -924,7 +924,7 @@ function loadExternalSources() {
         $("#sounds").append(soundsDiv);
       }
     })
-    .fail(function (jqXHR, textStatus, errorThrown) {
+    .fail(function(jqXHR, textStatus, errorThrown) {
       console.warn("AUDIO Error", errorThrown, textStatus);
     });
 }
@@ -951,7 +951,7 @@ var entityMap = {
 };
 
 function escapeHtml(string) {
-  return String(string).replace(/[&<>"'\/]/g, function (s) {
+  return String(string).replace(/[&<>"'\/]/g, function(s) {
     return entityMap[s];
   });
 }
@@ -964,7 +964,7 @@ function loadOverviewImages() {
 
   if (SHOW_CONF.preferredImageId) {
     var imageIds = SHOW_CONF.preferredImageId.split(",");
-    $.each(imageIds, function (idx, imageId) {
+    $.each(imageIds, function(idx, imageId) {
       var prefUrl =
         SHOW_CONF.biocacheServiceUrl +
         "/occurrences/search?q=images:" +
@@ -975,7 +975,7 @@ function loadOverviewImages() {
         url: prefUrl,
         dataType: "json",
         async: false,
-        success: function (data) {
+        success: function(data) {
           var record = {
             uuid: null,
             image: imageId,
@@ -1006,11 +1006,11 @@ function loadOverviewImages() {
     '&fq=multimedia:"Image"&im=true&facet=off&pageSize=5&start=0' +
     SHOW_CONF.imageFilter;
 
-  $.getJSON(url, function (data) {
+  $.getJSON(url, function(data) {
     if (data && data.totalRecords > 0) {
       addOverviewImages(data.occurrences, countPreferredImages);
     }
-  }).always(function () {
+  }).always(function() {
     $("#gallerySpinner").hide();
   });
 }
@@ -1068,8 +1068,8 @@ function addOverviewImage(overviewImageRecord) {
     .attr(
       "onclick",
       'event.stopImmediatePropagation(); heroImage("' +
-        overviewImageRecord.image +
-        '");',
+      overviewImageRecord.image +
+      '");',
     );
   setImageEditButtonText(
     $mainOverviewImage.parent().parent().find(".hero-button"),
@@ -1135,8 +1135,8 @@ function generateOverviewThumb(occurrence, id) {
     .attr(
       "onclick",
       'event.stopImmediatePropagation(); heroImage("' +
-        occurrence.image +
-        '");',
+      occurrence.image +
+      '");',
     );
   setImageEditButtonText(
     $taxonSummaryThumb.find(".hero-button"),
@@ -1158,7 +1158,7 @@ function editWikipediaURL() {
       encodeURIComponent(newUrl) +
       "&name=" +
       encodeURIComponent(SHOW_CONF.scientificName);
-    $.getJSON(url, function (data) {});
+    $.getJSON(url, function(data) { });
     SHOW_CONF.wikiUrl = newUrl;
   }
 }
@@ -1245,7 +1245,7 @@ function heroImage(imageId) {
       encodeURIComponent(SHOW_CONF.scientificName) +
       "&hide=" +
       encodeURIComponent(newHiddenImages.join(","));
-    $.getJSON(url, function (data) {});
+    $.getJSON(url, function(data) { });
 
     SHOW_CONF.preferredImageId = newImageIds.join(",");
     SHOW_CONF.hiddenImages = newHiddenImages.join(",");
@@ -1291,15 +1291,15 @@ function loadGalleryType(category, start) {
     "&im=true" +
     SHOW_CONF.imageFilter;
 
-  $.getJSON(url, function (data) {
+  $.getJSON(url, function(data) {
     if (data && data.totalRecords > 0) {
       var br = "<br>";
       var $categoryTmpl = $("#cat_" + category);
       $categoryTmpl.removeClass("hide");
 
       var count = 0;
-      $.each(data.occurrences, function (i, el) {
-        $.each(el.images, function (j, imageId) {
+      $.each(data.occurrences, function(i, el) {
+        $.each(el.images, function(j, imageId) {
           count = count + 1;
           // clone template div & populate with metadata
           var $taxonThumb = $("#taxon-thumb-template").clone();
@@ -1368,10 +1368,10 @@ function loadGalleryType(category, start) {
       }
     }
   })
-    .fail(function (jqxhr, textStatus, error) {
+    .fail(function(jqxhr, textStatus, error) {
       //alert('Error loading gallery: ' + textStatus + ', ' + error);
     })
-    .always(function () {
+    .always(function() {
       $("#gallerySpinner").hide();
     });
 }
@@ -1398,7 +1398,7 @@ function getImageTitleFromOccurrence(el) {
   }
 
   if (el.imageMetadata && el.imageMetadata.length > 0) {
-    $.each(el.imageMetadata, function (idx, im) {
+    $.each(el.imageMetadata, function(idx, im) {
       if (im.imageId == el.image) {
         if (im.creator != null) {
           if (briefHtml.length > 0) briefHtml += br;
@@ -1520,9 +1520,9 @@ function loadExpertDistroMap() {
     "/distribution/lsids/" +
     SHOW_CONF.guid +
     "?nowkt=true";
-  $.getJSON(url, function (data) {
+  $.getJSON(url, function(data) {
     if (data) {
-      $.each(data, function (idx, distribution) {
+      $.each(data, function(idx, distribution) {
         var record = {
           url: distribution.imageUrl || distribution.image_url,
           name: distribution.area_name,
@@ -1532,7 +1532,7 @@ function loadExpertDistroMap() {
         if (record.dr) {
           $.getJSON(
             SHOW_CONF.collectoryUrl + "/ws/dataResource/" + record.dr,
-            function (collectoryData) {
+            function(collectoryData) {
               record.providerName = collectoryData.name;
               distributions.push(record);
 
@@ -1572,8 +1572,8 @@ function showDistribution() {
       .attr(
         "href",
         SHOW_CONF.collectoryUrl +
-          "/public/show/" +
-          distributions[distributionsIdx].dr,
+        "/public/show/" +
+        distributions[distributionsIdx].dr,
       )
       .text(distributions[distributionsIdx].providerName);
     $("#expertDistroDiv #dataResource").html(attr);
