@@ -22,4 +22,3 @@
 //= require moment.min.js
 //= require ekko-lightbox.min.js
 //= require atlas.js
-//= require audiojs/audio.js
