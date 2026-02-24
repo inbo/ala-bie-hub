@@ -44,14 +44,28 @@
                                 <li>
                                     <g:if test="${cs.value.dr}">
                                         <a href="${collectoryUrl}/public/show/${cs.value.dr}"><span
-                                                class="iucn <bie:colourForStatus
-                                                        status="${cs.value.status}"/>">${cs.key}</span>${cs.value.status}
+                                                class=" iucn <bie:colourForStatus
+                                                        status="${cs.value.status}"/>">
+                                            <g:if test="${cs.key == 'IUCN'}">
+                                                ${cs.key}
+                                            </g:if>
+                                            <g:else>
+                                                ${cs.value.year}
+                                            </g:else>
+                                        </span>${cs.value.status}
                                         <!-- cs = ${cs} -->
                                         </a>
                                     </g:if>
                                     <g:else>
                                         <span class="iucn <bie:colourForStatus
-                                                status="${cs.value.status}"/>">${cs.key}</span>${cs.value.status}
+                                                status="${cs.value.status}"/>">
+                                            <g:if test="${cs.key == 'IUCN'}">
+                                                ${cs.key}
+                                            </g:if>
+                                            <g:else>
+                                                ${cs.value.year}
+                                            </g:else>
+                                        </span>${cs.value.status}
                                     </g:else>
                                 </li>
                             </g:each>
@@ -136,7 +150,7 @@
                                                     default="View map"/></a>
                     </g:if>
                     <a class="btn btn-primary btn-lg"
-                       href="${biocacheUrl}/occurrences/search?q=lsid:${tc?.taxonConcept?.guid}#tab_recordsView"
+                       href="${biocacheUrl}/occurrences/search?q=lsid:${tc?.taxonConcept?.guid}&fq=${grailsApplication.config.regionVlaanderen.query}&#tab_recordsView"
                        title="${g.message(code: 'overview.map.button.records.list.title', default: 'View and download occurrence records')}"
                        role="button"><g:message code="overview.map.button.records.list" default="View and download occurrence records"/></a>
                 </div>
