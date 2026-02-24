@@ -46,7 +46,7 @@
                                         <a href="${collectoryUrl}/public/show/${cs.value.dr}"><span
                                                 class=" iucn <bie:colourForStatus
                                                         status="${cs.value.status}"/>">
-                                            <g:if test="${cs.key == 'IUCN'}">
+                                            <g:if test="${cs.key == 'IUCN' || !cs.value.year}">
                                                 ${cs.key}
                                             </g:if>
                                             <g:else>
@@ -59,7 +59,7 @@
                                     <g:else>
                                         <span class="iucn <bie:colourForStatus
                                                 status="${cs.value.status}"/>">
-                                            <g:if test="${cs.key == 'IUCN'}">
+                                            <g:if test="${cs.key == 'IUCN' || !cs.value.year}">
                                                 ${cs.key}
                                             </g:if>
                                             <g:else>
