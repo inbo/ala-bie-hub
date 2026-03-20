@@ -292,3 +292,9 @@ h5.json > a {
 .content .navbox-inner ul li::before {
     content: '• ';
 }
+
+.map-info-text {
+    font-size: 0.9em;
+    margin-top: -5px;
+    margin-bottom: 10px;
+}
