@@ -126,6 +126,10 @@
                     <g:message code="overview.map.occurrence.records.02"/>)
                 </h3>
 
+                <p class="map-info-text">
+                    <g:message code="overview.map.info"/>
+                </p>
+
                 <div id="leafletMap"></div>
 
                 <g:if test="${grailsApplication.config.spatial.baseURL}">
