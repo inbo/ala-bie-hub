@@ -17,9 +17,8 @@ package au.org.ala.bie
 
 import com.google.common.util.concurrent.RateLimiter
 import grails.converters.JSON
+import groovy.json.JsonSlurper
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.select.Elements
 
 import java.nio.charset.StandardCharsets
 
@@ -48,32 +47,64 @@ class ExternalSiteController {
 
     def genbank = {
         genbankRateLimiter.acquire()
-        def searchStrings = params.list("s")
-        def searchParams = "(" + searchStrings.join(") OR (") + ")"
-        def genbankBase = grailsApplication.config.literature?.genbank?.url ?: "https://www.ncbi.nlm.nih.gov"
-        def url = (genbankBase + "/nuccore/?term=" + searchParams)
-        log.debug "genbank URL = ${url}"
-        Document doc = Jsoup.connect(url).timeout(10*1000).get()
-        Elements results = doc.select("div.rslt")
 
-        def totalResultsRaw = doc.select("h2.result_count").text()
-        def totalResults = 0
+        def searchStrings = params.list("s")
+        def searchParams = searchStrings.collect { "(${it}[Organism])" }.join(" OR ")
+
+        def genbankBase = grailsApplication.config.literature?.genbank?.url ?: "https://eutils.ncbi.nlm.nih.gov"
+
+        def pageSize = 20
+        def page = (params.int('page') ?: 1)
+        def retStart = (page - 1) * pageSize
+
+        def esearchUrl =
+                "${genbankBase}/entrez/eutils/esearch.fcgi" +
+                        "?db=nuccore" +
+                        "&term=${URLEncoder.encode(searchParams, 'UTF-8')}" +
+                        "&retmode=json" +
+                        "&retstart=${retStart}" +
+                        "&retmax=${pageSize}"
+
+        log.debug "NCBI ESEARCH URL = ${esearchUrl}"
+
+        def searchJson = new JsonSlurper().parseText(esearchUrl.toURL().text)
+
+        def ids = searchJson?.esearchresult?.idlist ?: []
+        def totalResults = (searchJson?.esearchresult?.count ?: "0") as int
+
         def formattedResults = []
 
-        if(totalResultsRaw){
-            totalResults = totalResultsRaw
-            results.each { result ->
-                def titleEl = result.getElementsByClass("title")
-                def linkTag = titleEl.get(0).getElementsByTag("a")
-                def link = genbankBase + linkTag.get(0).attr("href")
-                def title = linkTag.get(0).text()
-                def description = result.select('p[class=desc]').text()
-                def furtherDescription = result.select('dl[class=rprtid]').text()
-                formattedResults << [link:link,title:title,description:description, furtherDescription:furtherDescription]
+        if (ids) {
+
+            def esummaryUrl =
+                    "${genbankBase}/entrez/eutils/esummary.fcgi" +
+                            "?db=nuccore" +
+                            "&retmode=json" +
+                            "&id=${ids.join(',')}"
+
+            def summaryJson = new JsonSlurper().parseText(esummaryUrl.toURL().text)
+
+            ids.each { id ->
+                def doc = summaryJson?.result?.get(id)
+                if (!doc) return
+
+                def link = "https://www.ncbi.nlm.nih.gov/nuccore/${doc.uid}"
+
+                formattedResults << [
+                        link                : link,
+                        title               : doc.title,
+                        description         : doc.organism,
+                        furtherDescription  : "Accession: ${doc.accessionversion} | Length: ${doc.slen}"
+                ]
             }
         }
+
         response.setContentType("application/json")
-        render ([total:totalResults, resultsUrl:url, results:formattedResults] as JSON)
+        render([
+                total      : totalResults,
+                resultsUrl : esearchUrl,
+                results    : formattedResults
+        ] as JSON)
     }
 
     def bhl() {
