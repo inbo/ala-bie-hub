@@ -682,32 +682,164 @@ function renderPluginTab(speciesList, tabMetadata) {
 function loadPluginTab(speciesList, tabMetadata) {
   var tabContentKey = tabMetadata.contentKey;
   var kvpValues = speciesList.kvpValues;
-  $.each(kvpValues, function(idx, kvpValue) {
-    if (kvpValue.key == tabContentKey) {
-      var contentFilePath = kvpValue.value;
-      loadPluginTabContent(contentFilePath, tabMetadata);
-    }
-  });
+
+  const contentFilePath = kvpValues.find(kvp => kvp.key === tabContentKey)?.value;
+  const commonName = kvpValues.find(kvp => kvp.key === 'commonName')?.value;
+  const nodeType = kvpValues.find(kvp => kvp.key === 'nodeType')?.value;
+
+  if (contentFilePath) {
+    loadPluginTabContent(contentFilePath, tabMetadata, commonName, nodeType);
+  }
 }
 
-function loadPluginTabContent(contentFilePath, tabMetadata) {
+function loadPluginTabContent(contentFilePath, tabMetadata, commonName, nodeType) {
   var url = SHOW_CONF.assetsUrl + "/" + contentFilePath;
   $.ajax({ url: url }).done(function(data) {
-    renderPluginTabContent(data, tabMetadata);
+    renderPluginTabContent(data, tabMetadata, commonName, nodeType);
   });
 }
 
-function renderPluginTabContent(data, tabMetadata) {
+function renderPluginTabContent(data, tabMetadata, commonName, nodeType) {
   if (data) {
     // Parse the HTML safely
     var $parsed = $("<div>").append($.parseHTML(data)); // Wrap in div so we can search
     var $content = $parsed.find("#quarto-document-content").clone();
     $content.appendTo("#" + tabMetadata.tab);
+    initializeEcopediaWidgets(
+        $("#" + tabMetadata.tab, commonName, nodeType)
+    );
   } else {
     var $noContentFoundMessage =
       "<span>No content found for this species.</span>";
     $noContentFoundMessage.appendTo("#" + tabMetadata.tab);
   }
+}
+
+function initializeEcopediaWidgets($container, commonName, nodeType) {
+  $container.find(".ecopedia-widget").each(function () {
+    const $widget = $(this);
+    const speciesName = $widget.data("species");
+
+    if (!speciesName) {
+      return;
+    }
+    $.ajax({
+      url: `https://www.ecopedia.be/jsonapi/node/${nodeType}?filter[title]=${commonName}`,
+      method: "GET",
+      dataType: "json",
+      timeout: 3000,
+
+      success: function (json) {
+
+        const species = Array.isArray(json.data)
+            ? json.data[0]
+            : json.data;
+
+        if (!species || !species.attributes) {
+          return;
+        }
+
+        const attrs = species.attributes;
+
+        var imageUrl = null;
+
+        if (attrs.context_media && attrs.context_media.length) {
+          var image = attrs.context_media.find(function (m) {
+            return m.source === "field_flora_media";
+          });
+
+          if (image) {
+            imageUrl = image.url;
+          }
+        }
+
+        const descriptionParts = [];
+
+        if (
+            attrs.flora_beschrijving &&
+            attrs.flora_beschrijving.processed
+        ) {
+          descriptionParts.push(
+              attrs.flora_beschrijving.processed
+          );
+        }
+
+        if (
+            attrs.flora_habitat &&
+            attrs.flora_habitat.processed
+        ) {
+          descriptionParts.push(
+              attrs.flora_habitat.processed
+          );
+        }
+
+        if (
+            attrs.flora_areaal &&
+            attrs.flora_areaal.processed
+        ) {
+          descriptionParts.push(
+              attrs.flora_areaal.processed
+          );
+        }
+
+        if (
+            attrs.flora_verspreiding_in_vlaanderen &&
+            attrs.flora_verspreiding_in_vlaanderen.processed
+        ) {
+          descriptionParts.push(
+              attrs.flora_verspreiding_in_vlaanderen.processed
+          );
+        }
+
+        if (!imageUrl && descriptionParts.length === 0) {
+          return;
+        }
+
+        const descriptionHtml =
+            descriptionParts.join("");
+
+        $widget.html(
+            '<div style="' +
+            'display:flex;' +
+            'gap:20px;' +
+            'align-items:flex-start;' +
+            'margin-top:20px;' +
+            '">' +
+
+            (imageUrl
+                ? '<img ' +
+                'src="' + imageUrl + '" ' +
+                'alt="' + speciesName + '" ' +
+                'style="' +
+                'max-width:300px;' +
+                'height:auto;' +
+                'border-radius:6px;' +
+                '">'
+                : '') +
+
+            '<div>' +
+            '<h2>' +
+            (attrs.field_flora_naam || speciesName) +
+            '</h2>' +
+            '<div>' +
+            descriptionHtml +
+            '</div>' +
+            '</div>' +
+
+            '</div>'
+        );
+
+        // Broken image should disappear quietly
+        $widget.find("img").on("error", function () {
+          $(this).remove();
+        });
+      },
+
+      error: function () {
+        // intentionally silent
+      }
+    });
+  });
 }
 
 function showWikipediaData(data, testPage, targetName) {
