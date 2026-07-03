@@ -724,7 +724,7 @@ function initializeEcopediaWidgets($container, commonName, nodeType) {
       return;
     }
     $.ajax({
-      url: `https://www.ecopedia.be/jsonapi/node/${nodeType}?filter[title]=${commonName}`,
+      url: `/externalSite/ecopedia?nodeType=${nodeType}&commonName=${encodeURIComponent(commonName)}`,
       method: "GET",
       dataType: "json",
       timeout: 3000,

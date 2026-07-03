@@ -30,6 +30,7 @@ import org.jsoup.Jsoup
 import org.owasp.html.HtmlPolicyBuilder
 import org.owasp.html.PolicyFactory
 
+import java.nio.charset.Charset
 import java.util.regex.Pattern
 
 /**
@@ -52,6 +53,10 @@ class ExternalSiteService implements GrailsConfigurationAware {
     String wikipediaUrl
     String wikipediaLang
 
+    String ecopediaUrl
+    String ecopediaUsername
+    String ecopediaPassword
+
     def webClientService
 
     @Override
@@ -66,6 +71,9 @@ class ExternalSiteService implements GrailsConfigurationAware {
         ausTraitsBase = config.getProperty("ausTraits.baseURL")
         wikipediaUrl = config.getProperty("wikipedia.url")
         wikipediaLang = config.getProperty("wikipedia.lang")
+        ecopediaUrl = config.get("ecopedia.url")
+        ecopediaUsername = config.get("ecopedia.username")
+        ecopediaPassword = config.get("ecopedia.password")
     }
 
     /**
@@ -192,4 +200,15 @@ class ExternalSiteService implements GrailsConfigurationAware {
         webClientService.get(url, false, header)
     }
 
+    def searchEcopedia(String nodeType, String commonName){
+        String auth = Base64.encoder.encodeToString("${ecopediaUsername}:${ecopediaPassword}".getBytes(Charset.forName("UTF-8")))
+
+        String encodedCommonName = URLEncoder.encode(commonName, 'UTF-8')
+
+        String url = "${ecopediaUrl}/jsonapi/node/${nodeType}" + "?filter[title]=${encodedCommonName}"
+
+        var authHeader = ["Authorization": "Basic ${auth}"]
+
+        webClientService.get(url, false, authHeader)
+    }
 }
