@@ -138,6 +138,13 @@ class ExternalSiteController {
         render results as JSON
     }
 
+    def ecopedia() {
+        def nodeType = params.nodeType
+        def commonName = params.commonName
+        def results = externalSiteService.searchEcopedia(nodeType, commonName)
+        render results as JSON
+    }
+
     /**
      * Stream csv file from Austraits download endpoint directly to client
      * @return
