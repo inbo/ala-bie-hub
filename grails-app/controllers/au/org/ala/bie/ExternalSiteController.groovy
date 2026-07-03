@@ -142,7 +142,11 @@ class ExternalSiteController {
         def nodeType = params.nodeType
         def commonName = params.commonName
         def results = externalSiteService.searchEcopedia(nodeType, commonName)
-        render results as JSON
+        render(
+                text: results,
+                contentType: 'application/json',
+                encoding: 'UTF-8'
+        )
     }
 
     /**
