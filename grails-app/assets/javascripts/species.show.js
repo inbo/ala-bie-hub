@@ -704,9 +704,10 @@ function renderPluginTabContent(data, tabMetadata, commonName, nodeType) {
     // Parse the HTML safely
     var $parsed = $("<div>").append($.parseHTML(data)); // Wrap in div so we can search
     var $content = $parsed.find("#quarto-document-content").clone();
+    $content.removeAttr("id");
     $content.appendTo("#" + tabMetadata.tab);
     initializeEcopediaWidgets(
-        $("#" + tabMetadata.tab, commonName, nodeType)
+        $("#" + tabMetadata.tab), commonName, nodeType
     );
   } else {
     var $noContentFoundMessage =
