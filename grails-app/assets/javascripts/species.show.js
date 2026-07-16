@@ -684,31 +684,33 @@ function loadPluginTab(speciesList, tabMetadata) {
   var kvpValues = speciesList.kvpValues;
 
   const contentFilePath = kvpValues.find(kvp => kvp.key === tabContentKey)?.value;
-  const commonName = kvpValues.find(kvp => kvp.key === 'commonName')?.value;
-  const nodeType = kvpValues.find(kvp => kvp.key === 'nodeType')?.value;
+  const ecopediaCommonName = kvpValues.find(kvp => kvp.key === 'commonName')?.value;
+  const ecopediaNodeType = kvpValues.find(kvp => kvp.key === 'nodeType')?.value;
 
   if (contentFilePath) {
-    loadPluginTabContent(contentFilePath, tabMetadata, commonName, nodeType);
+    loadPluginTabContent(contentFilePath, tabMetadata, ecopediaCommonName, ecopediaNodeType);
   }
 }
 
-function loadPluginTabContent(contentFilePath, tabMetadata, commonName, nodeType) {
+function loadPluginTabContent(contentFilePath, tabMetadata, ecopediaCommonName, ecopediaNodeType) {
   var url = SHOW_CONF.assetsUrl + "/" + contentFilePath;
   $.ajax({ url: url }).done(function(data) {
-    renderPluginTabContent(data, tabMetadata, commonName, nodeType);
+    renderPluginTabContent(data, tabMetadata, ecopediaCommonName, ecopediaNodeType);
   });
 }
 
-function renderPluginTabContent(data, tabMetadata, commonName, nodeType) {
+function renderPluginTabContent(data, tabMetadata, ecopediaCommonName, ecopediaNodeType) {
   if (data) {
     // Parse the HTML safely
     var $parsed = $("<div>").append($.parseHTML(data)); // Wrap in div so we can search
     var $content = $parsed.find("#quarto-document-content").clone();
     $content.removeAttr("id");
     $content.appendTo("#" + tabMetadata.tab);
-    initializeEcopediaWidgets(
-        $("#" + tabMetadata.tab), commonName, nodeType
-    );
+    if (ecopediaNodeType) {
+      initializeEcopediaWidgets(
+          $("#" + tabMetadata.tab), ecopediaCommonName, ecopediaNodeType
+      );
+    }
   } else {
     var $noContentFoundMessage =
       "<span>No content found for this species.</span>";
@@ -717,31 +719,16 @@ function renderPluginTabContent(data, tabMetadata, commonName, nodeType) {
 }
 
 function initializeEcopediaWidgets($container, commonName, nodeType) {
-  console.log("initializeEcopediaWidgets called", {
-    commonName,
-    nodeType,
-    widgetCount: $container.find(".ecopedia-widget").length
-  });
   $container.find(".ecopedia-widget").each(function () {
     const $widget = $(this);
     const speciesName = $widget.data("species");
-    console.log("Processing ecopedia widget", {
-      speciesName,
-      commonName,
-      nodeType,
-      widget: $widget[0]
-    });
+
     if (!speciesName) {
       console.warn("No data-species found on widget", $widget[0]);
       return;
     }
 
-    console.log("speciesName =", speciesName);
-    console.log("commonName =", commonName);
-    console.log("Are they equal?", speciesName === commonName);
-
     const url = `/externalSite/ecopedia?nodeType=${nodeType}&commonName=${encodeURIComponent(commonName)}`;
-    console.log("Calling Ecopedia endpoint", url);
     $.ajax({
       url: url,
       method: "GET",
@@ -749,12 +736,10 @@ function initializeEcopediaWidgets($container, commonName, nodeType) {
       timeout: 3000,
 
       success: function (json) {
-        console.log("Ecopedia AJAX success", json);
         const species = Array.isArray(json.data)
             ? json.data[0]
             : json.data;
 
-        console.log("Extracted species", species);
         if (!species || !species.attributes) {
           console.warn("No species or attributes found", {
             species,
@@ -764,12 +749,10 @@ function initializeEcopediaWidgets($container, commonName, nodeType) {
         }
 
         const attrs = species.attributes;
-        console.log("Species attributes", attrs);
         var imageUrl = null;
-        console.log("Image URL", imageUrl);
         if (attrs.context_media && attrs.context_media.length) {
           var image = attrs.context_media.find(function (m) {
-            return m.source === "field_flora_media";
+            return m.source === `field_${nodeType}_media`;
           });
 
           if (image) {
@@ -827,12 +810,6 @@ function initializeEcopediaWidgets($container, commonName, nodeType) {
         const descriptionHtml =
             descriptionParts.join("");
 
-        console.log("Rendering widget", {
-          title: attrs.field_flora_naam || speciesName,
-          imageUrl,
-          descriptionLength: descriptionHtml.length
-        });
-
         $widget.html(
             '<div style="' +
             'display:flex;' +
@@ -864,17 +841,15 @@ function initializeEcopediaWidgets($container, commonName, nodeType) {
             '</div>'
         );
 
-        console.log("Widget HTML inserted");
-
         // Broken image should disappear quietly
         $widget.find("img").on("error", function () {
           $(this).remove();
         });
       },
 
-      error: function () {
+      error: function (xhr, textStatus, errorThrown) {
         // intentionally silent
-        console.error("Ecopedia AJAX failed", {
+        console.error("Ecopedia external site AJAX failed", {
           status: xhr.status,
           textStatus,
           errorThrown,
