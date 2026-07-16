@@ -762,40 +762,19 @@ function initializeEcopediaWidgets($container, commonName, nodeType) {
 
         const descriptionParts = [];
 
-        if (
-            attrs.flora_beschrijving &&
-            attrs.flora_beschrijving.processed
-        ) {
-          descriptionParts.push(
-              attrs.flora_beschrijving.processed
-          );
-        }
+        const fields = [
+          'beschrijving',
+          'habitat',
+          'areaal',
+          'verspreiding_in_vlaanderen',
+          'ecologie'
+        ];
 
-        if (
-            attrs.flora_habitat &&
-            attrs.flora_habitat.processed
-        ) {
-          descriptionParts.push(
-              attrs.flora_habitat.processed
-          );
-        }
-
-        if (
-            attrs.flora_areaal &&
-            attrs.flora_areaal.processed
-        ) {
-          descriptionParts.push(
-              attrs.flora_areaal.processed
-          );
-        }
-
-        if (
-            attrs.flora_verspreiding_in_vlaanderen &&
-            attrs.flora_verspreiding_in_vlaanderen.processed
-        ) {
-          descriptionParts.push(
-              attrs.flora_verspreiding_in_vlaanderen.processed
-          );
+        for (const field of fields) {
+          const value = attrs[`${nodeType}_${field}`];
+          if (value?.processed) {
+            descriptionParts.push(value.processed);
+          }
         }
 
         if (!imageUrl && descriptionParts.length === 0) {
@@ -831,7 +810,7 @@ function initializeEcopediaWidgets($container, commonName, nodeType) {
 
             '<div>' +
             '<h2>' +
-            (attrs.field_flora_naam || speciesName) +
+            (attrs[`field_${nodeType}_naam`] || speciesName) +
             '</h2>' +
             '<div>' +
             descriptionHtml +
